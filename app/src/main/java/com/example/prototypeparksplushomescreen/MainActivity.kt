@@ -46,11 +46,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 	private val RED_COLOR = Color.parseColor("#BF544C")
 	private val FILL_OPACITY = .7f
 	private val LINE_WIDTH = 2f
-	var alpinePointsList = MutableLiveData<List<Point>>()
-	var canyonPointsList = MutableLiveData<List<Point>>()
-	var desertPointsList = MutableLiveData<List<Point>>()
-	var mesaPointsList = MutableLiveData<List<Point>>()
-	var urbanPointsList = MutableLiveData<List<Point>>()
+//	var alpinePointsList = MutableLiveData<List<Point>>()
+	var alpineFeatureCollection = MutableLiveData<FeatureCollection>()
+	var canyonFeatureCollection = MutableLiveData<FeatureCollection>()
+	var urbanFeatureCollection = MutableLiveData<FeatureCollection>()
+	var mesaFeatureCollection = MutableLiveData<FeatureCollection>()
+	var desertFeatureCollection = MutableLiveData<FeatureCollection>()
+//
+//	var canyonPointsList = MutableLiveData<List<Point>>()
+//	var desertPointsList = MutableLiveData<List<Point>>()
+//	var mesaPointsList = MutableLiveData<List<Point>>()
+//	var urbanPointsList = MutableLiveData<List<Point>>()
 	var alpineFeature = Feature.fromGeometry(Point.fromLngLat(-113.560123, 37.450705))
 	var desertFeature = Feature.fromGeometry(Point.fromLngLat(-113.895337, 37.208261))
 	var mesaFeature = Feature.fromGeometry(Point.fromLngLat(-113.115297, 37.095368))
@@ -197,7 +203,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 
 	private fun addSources(style: Style)
 	{
-		alpinePointsList.observe(this, androidx.lifecycle.Observer {
+		alpineFeatureCollection.observe(this, androidx.lifecycle.Observer {
 			if (it != null)
 			{
 				if (style.getSource(alpineSource) != null)
@@ -208,16 +214,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 
 				if (style.getSource(alpineSource) == null)
 				{
-					val innerList = ArrayList<LineString>()
-					val innerLineString = LineString.fromLngLats(it)
-					innerList.add(innerLineString)
-					style.addSource(GeoJsonSource(alpineSource, innerLineString))
+					val innerList : FeatureCollection = it
+//					val innerLineString = LineString.fromLngLats(it)
+//					innerList.add(innerLineString)
+					style.addSource(GeoJsonSource(alpineSource, it))
 					addAlpineLayer(style)
+
 				}
 			}
 		})
 
-		canyonPointsList.observe(this, androidx.lifecycle.Observer {
+		canyonFeatureCollection.observe(this, androidx.lifecycle.Observer {
 			if (it != null)
 			{
 				if (style.getSource(canyonSource) != null)
@@ -228,16 +235,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 
 				if (style.getSource(canyonSource) == null)
 				{
-					val innerList = ArrayList<LineString>()
-					val innerLineString = LineString.fromLngLats(it)
-					innerList.add(innerLineString)
-					style.addSource(GeoJsonSource(canyonSource, innerLineString))
+//					val innerList = ArrayList<LineString>()
+//					val innerLineString = LineString.fromLngLats(it)
+//					innerList.add(innerLineString)
+					style.addSource(GeoJsonSource(canyonSource, it))
 					addCanyonLayer(style)
 				}
 			}
 		})
 
-		desertPointsList.observe(this, androidx.lifecycle.Observer {
+		desertFeatureCollection.observe(this, androidx.lifecycle.Observer {
 			if (it != null)
 			{
 				if (style.getSource(desertSource) != null)
@@ -248,16 +255,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 
 				if (style.getSource(desertSource) == null)
 				{
-					val innerList = ArrayList<LineString>()
-					val innerLineString = LineString.fromLngLats(it)
-					innerList.add(innerLineString)
-					style.addSource(GeoJsonSource(desertSource, innerLineString))
+//					val innerList = ArrayList<LineString>()
+//					val innerLineString = LineString.fromLngLats(it)
+//					innerList.add(innerLineString)
+					style.addSource(GeoJsonSource(desertSource, it))
 					addDesertLayer(style)
 				}
 			}
 		})
 
-		mesaPointsList.observe(this, androidx.lifecycle.Observer {
+		mesaFeatureCollection.observe(this, androidx.lifecycle.Observer {
 			if (it != null)
 			{
 				if (style.getSource(mesaSource) != null)
@@ -268,16 +275,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 
 				if (style.getSource(mesaSource) == null)
 				{
-					val innerList = ArrayList<LineString>()
-					val innerLineString = LineString.fromLngLats(it)
-					innerList.add(innerLineString)
-					style.addSource(GeoJsonSource(mesaSource, innerLineString))
+//					val innerList = ArrayList<LineString>()
+//					val innerLineString = LineString.fromLngLats(it)
+//					innerList.add(innerLineString)
+					style.addSource(GeoJsonSource(mesaSource, it))
 					addMesaLayer(style)
 				}
 			}
 		})
 
-		urbanPointsList.observe(this, androidx.lifecycle.Observer {
+		urbanFeatureCollection.observe(this, androidx.lifecycle.Observer {
 			if (it != null)
 			{
 				if (style.getSource(urbanSource) != null)
@@ -288,10 +295,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 
 				if (style.getSource(urbanSource) == null)
 				{
-					val innerList = ArrayList<LineString>()
-					val innerLineString = LineString.fromLngLats(it)
-					innerList.add(innerLineString)
-					style.addSource(GeoJsonSource(urbanSource, innerLineString))
+//					val innerList = ArrayList<LineString>()
+//					val innerLineString = LineString.fromLngLats(it)
+//					innerList.add(innerLineString)
+					style.addSource(GeoJsonSource(urbanSource, it))
 					addUrbanLayer(style)
 				}
 			}
@@ -478,37 +485,53 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 	private suspend fun loadTrailFeatures()
 	{
 		withContext(Dispatchers.Main) {
-			applicationContext.assets.open("Alpine.json").use {
-				JsonReader(it.reader()).use { reader ->
-					alpinePointsList.value = ParseJson().build(reader)
-//                    Log.d("FEATURE", output.size.toString())
-				}
+			applicationContext.assets.open("Alpine.geojson").use {
+				alpineFeatureCollection.value = FeatureCollection.fromJson(convertStreamToString(it))
+//				JsonReader(it.reader()).use { reader ->
+//
+////					alpinePointsList.value = ParseJson().build(reader)
+////                    Log.d("FEATURE", output.size.toString())
+//				}
 			}
 
-			applicationContext.assets.open("Canyon.json").use {
-				JsonReader(it.reader()).use { reader ->
-					canyonPointsList.value = ParseJson().build(reader)
-				}
+			applicationContext.assets.open("Canyon.geojson").use {
+				canyonFeatureCollection.value = FeatureCollection.fromJson(convertStreamToString(it))
+//				JsonReader(it.reader()).use { reader ->
+//					canyonPointsList.value = ParseJson().build(reader)
+//				}
 			}
 
-			applicationContext.assets.open("Desert.json").use {
-				JsonReader(it.reader()).use { reader ->
-					desertPointsList.value = ParseJson().build(reader)
-				}
+			applicationContext.assets.open("Desert.geojson").use {
+				desertFeatureCollection.value = FeatureCollection.fromJson(convertStreamToString(it))
+//				JsonReader(it.reader()).use { reader ->
+//					desertPointsList.value = ParseJson().build(reader)
+//				}
 			}
 
-			applicationContext.assets.open("Mesa.json").use {
-				JsonReader(it.reader()).use { reader ->
-					mesaPointsList.value = ParseJson().build(reader)
-				}
+			applicationContext.assets.open("Mesa.geojson").use {
+				mesaFeatureCollection.value = FeatureCollection.fromJson(convertStreamToString(it))
+//				JsonReader(it.reader()).use { reader ->
+//					mesaPointsList.value = ParseJson().build(reader)
+//				}
 			}
 
-			applicationContext.assets.open("Urban.json").use {
-				JsonReader(it.reader()).use { reader ->
-					urbanPointsList.value = ParseJson().build(reader)
-				}
+			applicationContext.assets.open("Urban.geojson").use {
+				urbanFeatureCollection.value = FeatureCollection.fromJson(convertStreamToString(it))
+//				JsonReader(it.reader()).use { reader ->
+//					urbanPointsList.value = ParseJson().build(reader)
+//				}
 			}
 			Log.d("FEATURES", "LOADED")
+		}
+	}
+
+	companion object {
+		fun convertStreamToString(itIs: InputStream): String{
+			var scanner: Scanner = Scanner(itIs).useDelimiter("\\A");
+			if (scanner.hasNext()){
+				return scanner.next()
+			}
+			return ""
 		}
 	}
 
