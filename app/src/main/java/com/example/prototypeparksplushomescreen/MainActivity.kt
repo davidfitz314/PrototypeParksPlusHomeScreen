@@ -383,13 +383,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 			FillLayer(alpineLayer, alpineSource).withProperties(
 				lineColor(RED_COLOR),
 				lineWidth(LINE_WIDTH),
-				fillColor(Color.parseColor("#4D009688")),
+				fillColor(Color.parseColor("#8072916A")),
 				textField("alpine")
 			)
 		);
 		style.addLayer(
 			LineLayer(alpineLayerBorder, alpineSource).withProperties(
-				lineColor(Color.parseColor("#000000")),
+				lineColor(Color.parseColor("#466940")),
 				lineWidth(LINE_WIDTH),
 				lineCap(Property.LINE_CAP_ROUND),
 				lineJoin(Property.LINE_JOIN_ROUND)
@@ -403,13 +403,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 			FillLayer(canyonLayer, canyonSource).withProperties(
 				lineColor(RED_COLOR),
 				lineWidth(LINE_WIDTH),
-				fillColor(Color.parseColor("#4D800080")),
+				fillColor(Color.parseColor("#80461EB5")),
 				textField("canyon")
 			)
 		);
 		style.addLayer(
 			LineLayer(canyonLayerBorder, canyonSource).withProperties(
-				lineColor(Color.parseColor("#000000")),
+				lineColor(Color.parseColor("#54496D")),
 				lineWidth(LINE_WIDTH),
 				lineCap(Property.LINE_CAP_ROUND),
 				lineJoin(Property.LINE_JOIN_ROUND)
@@ -423,13 +423,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 			FillLayer(desertLayer, desertSource).withProperties(
 				lineColor(RED_COLOR),
 				lineWidth(LINE_WIDTH),
-				fillColor(Color.parseColor("#4DFFFF00")),
+				fillColor(Color.parseColor("#80FFB800")),
 				textField("desert")
 			)
 		);
 		style.addLayer(
 			LineLayer(desertLayerBorder, desertSource).withProperties(
-				lineColor(Color.parseColor("#000000")),
+				lineColor(Color.parseColor("#FFB800")),
 				lineWidth(LINE_WIDTH),
 				lineCap(Property.LINE_CAP_ROUND),
 				lineJoin(Property.LINE_JOIN_ROUND)
@@ -444,13 +444,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 			FillLayer(mesaLayer, mesaSource).withProperties(
 				lineColor(RED_COLOR),
 				lineWidth(LINE_WIDTH),
-				fillColor(Color.parseColor("#4DFF0000")),
+				fillColor(Color.parseColor("#80E72508")),
 				textField("mesa")
 			)
 		);
 		style.addLayer(
 			LineLayer(mesaLayerBorder, mesaSource).withProperties(
-				lineColor(Color.parseColor("#000000")),
+				lineColor(Color.parseColor("#F64848")),
 				lineWidth(LINE_WIDTH),
 				lineCap(Property.LINE_CAP_ROUND),
 				lineJoin(Property.LINE_JOIN_ROUND)
@@ -464,12 +464,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 			FillLayer(urbanLayer, urbanSource).withProperties(
 				lineColor(RED_COLOR),
 				lineWidth(LINE_WIDTH),
-				fillColor(Color.parseColor("#4D0000FF"))
+				fillColor(Color.parseColor("#80529FF2"))
 			)
 		);
 		style.addLayer(
 			LineLayer(urbanLayerBorder, urbanSource).withProperties(
-				lineColor(Color.parseColor("#000000")),
+				lineColor(Color.parseColor("#529FF2")),
 				lineWidth(LINE_WIDTH),
 				lineCap(Property.LINE_CAP_ROUND),
 				lineJoin(Property.LINE_JOIN_ROUND)
