@@ -32,6 +32,7 @@ class JsonTrailHandler {
             }
         }
         inputStream.endObject()
+
         if (myPoints.size > 0) {
             val feature = Feature.fromGeometry(LineString.fromLngLats(myPoints))
             return feature
