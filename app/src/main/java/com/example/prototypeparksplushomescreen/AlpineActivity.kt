@@ -127,7 +127,7 @@ class AlpineActivity : AppCompatActivity(), OnMapReadyCallback
 	private fun addTrailLayer(style: Style){
 		style.addLayer(
 			LineLayer("trail", "default-source").withProperties(
-				lineColor(Color.BLACK),
+				lineColor(Color.parseColor("#654321")),
 				lineWidth(2f),
 				lineCap(Property.LINE_CAP_ROUND),
 				lineJoin(Property.LINE_JOIN_ROUND)
