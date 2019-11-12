@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 		val features: List<Feature>? = mapboxMap?.queryRenderedFeatures(rectF, alpineLayer)
 		if (features != null && features.size > 0)
 		{
-			Toast.makeText(this, "clicked " + "Alpine Layer", Toast.LENGTH_SHORT).show()
+//			Toast.makeText(this, "clicked " + "Alpine Layer", Toast.LENGTH_SHORT).show()
 			val alpineIntent = Intent(this, AlpineActivity::class.java)
 			startActivity(alpineIntent)
 			return true
@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 		if (cfeatures != null && cfeatures.size > 0)
 		{
 			//			val name: String = features.get(0).getStringProperty(FEATURE_TITLE_LABEL);
-			Toast.makeText(this, "clicked " + "Canyon Layer", Toast.LENGTH_SHORT).show()
+//			Toast.makeText(this, "clicked " + "Canyon Layer", Toast.LENGTH_SHORT).show()
 			val canyonIntent = Intent(this, CanyonActivity::class.java)
 			startActivity(canyonIntent)
 			return true
@@ -173,7 +173,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 		{
 			//			val name: String = features.get(0).getStringProperty(FEATURE_TITLE_LABEL);
 //            viewModel.onNavigateToFeatureScreen(features.get(0))
-			Toast.makeText(this, "clicked " + "Desert Layer", Toast.LENGTH_SHORT).show()
+//			Toast.makeText(this, "clicked " + "Desert Layer", Toast.LENGTH_SHORT).show()
 			val desertIntent = Intent(this, DesertActivity::class.java)
 			startActivity(desertIntent)
 			return true
@@ -185,7 +185,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 //            viewModel.onNavigateToFeatureScreen(features.get(0))
 			val mesaIntent = Intent(this, MesaActivity::class.java)
 			startActivity(mesaIntent)
-			Toast.makeText(this, "clicked " + "Mesa Layer", Toast.LENGTH_SHORT).show()
+//			Toast.makeText(this, "clicked " + "Mesa Layer", Toast.LENGTH_SHORT).show()
 			return true
 		}
 		val ufeatures: List<Feature>? = mapboxMap?.queryRenderedFeatures(rectF, urbanLayer)
@@ -193,7 +193,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 		{
 			//			val name: String = features.get(0).getStringProperty(FEATURE_TITLE_LABEL);
 //            viewModel.onNavigateToFeatureScreen(features.get(0))
-			Toast.makeText(this, "clicked " + "Urban Layer", Toast.LENGTH_SHORT).show()
+//			Toast.makeText(this, "clicked " + "Urban Layer", Toast.LENGTH_SHORT).show()
 			val urbanIntent = Intent(this, UrbanActivity::class.java)
 			startActivity(urbanIntent)
 			return true
