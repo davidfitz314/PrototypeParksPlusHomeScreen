@@ -6,6 +6,9 @@ import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.io.InputStream
 import java.util.*
 import kotlin.collections.ArrayList
@@ -15,27 +18,40 @@ class JsonTrailHandler {
     private var myPoints = ArrayList<Point>()
 
 
+
     fun readJson(inputStream: JsonReader): Feature? {
-        inputStream.beginObject()
-        while (inputStream.hasNext())
-        {
-            val name = inputStream.nextName()
-//            Log.d("FEATURE", name)
-            if (name == "coordinates")
-            {
-//                readJsonArray(reader)
-                readArray(inputStream)
-            }
-            else
-            {
-                inputStream.skipValue()
-            }
-        }
-        inputStream.endObject()
+        val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+        val adapter: JsonAdapter<MyTrail> = moshi.adapter(MyTrail::class.java)
+
+//        val item = adapter.fromJson(inputStream)
+
+//        inputStream.beginObject()
+//        while (inputStream.hasNext())
+//        {
+//            val name = inputStream.nextName()
+////            Log.d("FEATURE", name)
+//            if (name == "coordinates")
+//            {
+////                readJsonArray(reader)
+//                readArray(inputStream)
+//            }
+//            else
+//            {
+//                inputStream.skipValue()
+//            }
+//        }
+//        inputStream.endObject()
 
         if (myPoints.size > 0) {
-            val feature = Feature.fromGeometry(LineString.fromLngLats(myPoints))
-            return feature
+//            val feature = Feature.fromGeometry(LineString.fromLngLats(myPoints))
+//            item?.let {
+//                val feature = Feature.fromGeometry(LineString.fromLngLats(it.generateMapPointList()))
+//                feature.addStringProperty("name", item.name)
+//                return feature
+//            }
+            return null
         } else {
             return null
         }

@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
+import com.mapbox.geojson.LineString
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
@@ -19,6 +20,9 @@ import com.mapbox.mapboxsdk.style.layers.LineLayer
 import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -31,6 +35,10 @@ class CanyonActivity : AppCompatActivity(), OnMapReadyCallback
 	var featureCollection = MutableLiveData<ArrayList<Feature>>()
 	var trailNameList: ArrayList<String> = ArrayList<String>()
 
+	val moshi = Moshi.Builder()
+		.add(KotlinJsonAdapterFactory())
+		.build()
+	val adapter: JsonAdapter<MyTrail> = moshi.adapter(MyTrail::class.java)
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -50,10 +58,17 @@ class CanyonActivity : AppCompatActivity(), OnMapReadyCallback
 				withContext(Dispatchers.Main){
 					try {
 						applicationContext.assets.open("canyonjson/" + i).use {
-							JsonReader(it.reader()).use { reader ->
-								val myFeature = JsonTrailHandler().readJson(reader)
-								addFeatureToCollection(myFeature)
+							val reader = it.bufferedReader().use { it.readText() }
+							val item = adapter.fromJson(reader)
+							item?.let {myTrail ->
+								val feature = Feature.fromGeometry(LineString.fromLngLats(myTrail.generateMapPointList()))
+								feature.addStringProperty("name", myTrail.name)
+								addFeatureToCollection(feature)
 							}
+//							JsonReader(it.reader()).use { reader ->
+//								val myFeature = JsonTrailHandler().readJson(reader)
+//								addFeatureToCollection(myFeature)
+//							}
 						}
 					} catch (e: Exception){
 						e.printStackTrace()

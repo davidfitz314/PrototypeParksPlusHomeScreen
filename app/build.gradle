@@ -48,4 +48,6 @@ dependencies {
     // MapBox libraries
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.2.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v8:0.7.0'
+
+    implementation("com.squareup.moshi:moshi-kotlin:1.9.2")
 }

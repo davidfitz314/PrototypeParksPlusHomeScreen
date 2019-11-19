@@ -21,6 +21,9 @@ import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.*
 
 class AlpineActivity : AppCompatActivity(), OnMapReadyCallback
@@ -31,6 +34,11 @@ class AlpineActivity : AppCompatActivity(), OnMapReadyCallback
 	var mapTrails = MutableLiveData<ArrayList<Point>>()
 	var featureCollection = MutableLiveData<ArrayList<Feature>>()
 	var trailNameList: ArrayList<String> = ArrayList<String>()
+
+	val moshi = Moshi.Builder()
+		.add(KotlinJsonAdapterFactory())
+		.build()
+	val adapter: JsonAdapter<MyTrail> = moshi.adapter(MyTrail::class.java)
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -48,11 +56,19 @@ class AlpineActivity : AppCompatActivity(), OnMapReadyCallback
 		for (i in trailNameList) {
 			GlobalScope.launch {
 				withContext(Dispatchers.Main){
-					applicationContext.assets.open("alpinejson/"+i).use {
-						JsonReader(it.reader()).use { reader ->
-							val myFeature = JsonTrailHandler().readJson(reader)
-							addFeatureToCollection(myFeature)
+					try {
+						applicationContext.assets.open("alpinejson/" + i).use {
+							val reader = it.bufferedReader().use { it.readText() }
+							val item = adapter.fromJson(reader)
+							item?.let { myTrail ->
+								val feature =
+									Feature.fromGeometry(LineString.fromLngLats(myTrail.generateMapPointList()))
+								feature.addStringProperty("name", myTrail.name)
+								addFeatureToCollection(feature)
+							}
 						}
+					}catch (e: Exception){
+						e.printStackTrace()
 					}
 				}
 			}
