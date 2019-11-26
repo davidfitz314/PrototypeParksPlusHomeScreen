@@ -1,6 +1,7 @@
 package com.example.prototypeparksplushomescreen
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.PointF
 import android.graphics.RectF
@@ -9,11 +10,15 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.JsonReader
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
+import androidx.preference.PreferenceManager
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.LineString
@@ -62,6 +67,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 	var mesaFeature = Feature.fromGeometry(Point.fromLngLat(-113.115297, 37.095368))
 	var urbanFeature = Feature.fromGeometry(Point.fromLngLat(-113.570852, 37.080415))
 	var canyonFeature = Feature.fromGeometry(Point.fromLngLat(-113.031394, 37.330810))
+	var isPopUpEnabled: Boolean = true
+	var prefs: SharedPreferences? = null
+	val popupBoolean = "mainscreen_popup_key"
 
 
 	var textFeatureList: List<Feature>? = null
@@ -105,10 +113,38 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 		GlobalScope.launch {
 			loadTrailFeatures()
 		}
+
+
+
+		//get the shared prefs object
+		prefs = PreferenceManager.getDefaultSharedPreferences(this)
+		isPopUpEnabled = prefs!!.getBoolean(popupBoolean, true)
+
+		if (!isPopUpEnabled) {
+			val closedLayout: ConstraintLayout = findViewById(R.id.homescreenLayoverLayout)
+			closedLayout.visibility = View.GONE
+		}
+
+
 		title = "Greater Zion Regions"
 		//		fetchFromAssets()
 	}
 
+	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+		val inflater: MenuInflater = menuInflater
+		inflater.inflate(R.menu.main_menu, menu)
+		return true
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		return when (item.itemId){
+			R.id.SettingsButton -> {
+				goToOptionsPage()
+				return true
+			}
+			else -> super.onOptionsItemSelected(item)
+		}
+	}
 
 	override fun onMapReady(mapboxMap: MapboxMap)
 	{
@@ -579,7 +615,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 
 	fun closeLayoverLayout(view: View)
 	{
-		val closedLayout: ConstraintLayout = findViewById(R.id.homescreenLayoverLayout)
-		closedLayout.visibility = View.GONE
+		if (isPopUpEnabled) {
+			val closedLayout: ConstraintLayout = findViewById(R.id.homescreenLayoverLayout)
+			closedLayout.visibility = View.GONE
+			val editor = prefs!!.edit()
+			editor.putBoolean(popupBoolean, false)
+			editor.apply()
+		}
+	}
+
+	fun goToOptionsPage(){
+		val intent = Intent(this, SettingsActivity::class.java)
+		startActivity(intent)
 	}
 }

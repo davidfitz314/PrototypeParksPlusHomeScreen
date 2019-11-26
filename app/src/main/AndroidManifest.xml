@@ -9,10 +9,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CanyonActivity" android:parentActivityName=".MainActivity" />
-        <activity android:name=".UrbanActivity" android:parentActivityName=".MainActivity" />
-        <activity android:name=".MesaActivity" android:parentActivityName=".MainActivity" />
-        <activity android:name=".DesertActivity" android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.prototypeparksplushomescreen.MainActivity" />
+        </activity>
+        <activity
+            android:name=".CanyonActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".UrbanActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".MesaActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".DesertActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".AlpineActivity"
             android:parentActivityName=".MainActivity" />
