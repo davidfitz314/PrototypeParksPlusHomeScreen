@@ -1,4 +1,4 @@
-package com.example.prototypeparksplushomescreen.data
+package com.example.prototypeparksplushomescreen.data.database
 
 import android.content.Context
 import androidx.room.Database
@@ -7,9 +7,18 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.example.prototypeparksplushomescreen.data.DatabaseHelpers.SeedDatabaseWorker
+import com.example.prototypeparksplushomescreen.data.HelperDaos.TrailAndTrailPointsHelper
+import com.example.prototypeparksplushomescreen.data.dao.TrailCoordinatesDao
+import com.example.prototypeparksplushomescreen.data.dao.TrailEntityDao
+import com.example.prototypeparksplushomescreen.data.entity.TrailEntity
+import com.example.prototypeparksplushomescreen.data.entity.TrailPointsEntity
 
-@Database(entities = [], version = 1, exportSchema = false)
+@Database(entities = [TrailEntity::class, TrailPointsEntity::class], version = 1, exportSchema = false)
 abstract class ZionDatabase : RoomDatabase() {
+    abstract fun trailDao(): TrailEntityDao
+    abstract fun trailPointsDao(): TrailCoordinatesDao
+    abstract fun TrailAndTrailPointsDao(): TrailAndTrailPointsHelper
 
     companion object {
         @Volatile
