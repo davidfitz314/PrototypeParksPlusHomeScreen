@@ -57,4 +57,7 @@ versions.kotlin = "1.3.21"
 versions.ktlint = "0.28.0"
 versions.ktx = "1.0.1"
 
+
+versions.stetho = "1.5.0"
+
 ext.versions = versions

@@ -65,7 +65,7 @@ class AlpineActivity : AppCompatActivity(), OnMapReadyCallback
 			it?.let {
 				Log.d("TRAILPOINTSSIZE", it.size.toString())
 				for (each in it){
-					Log.d("TRAILPOINTSSIZE", each.trailPoints.toString())
+					Log.d("TRAILPOINTSSIZE", each.trail.trailName)
 				}
 
 			}

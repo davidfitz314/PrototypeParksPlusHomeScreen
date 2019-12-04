@@ -69,4 +69,8 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.5'
 
+    // Debug libraries
+    debugImplementation "com.facebook.stetho:stetho:$versions.stetho"
+    debugImplementation "com.facebook.stetho:stetho-okhttp3:$versions.stetho"
+
 }
