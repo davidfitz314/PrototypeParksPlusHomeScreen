@@ -7,8 +7,14 @@ import android.os.PersistableBundle
 import android.util.JsonReader
 import android.util.Log
 import androidx.annotation.NonNull
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.example.prototypeparksplushomescreen.data.EntityHelpers.TrailAndTrailPointsEntityHelper
+import com.example.prototypeparksplushomescreen.data.HelperDaos.TrailAndTrailPointsHelper
+import com.example.prototypeparksplushomescreen.data.database.ZionDatabase
+import com.example.prototypeparksplushomescreen.viewmodel.TrailViewModel
 import com.mapbox.geojson.*
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.maps.MapView
@@ -40,6 +46,8 @@ class AlpineActivity : AppCompatActivity(), OnMapReadyCallback
 		.build()
 	val adapter: JsonAdapter<MyTrail> = moshi.adapter(MyTrail::class.java)
 
+	lateinit var viewModel: TrailViewModel
+
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
@@ -51,6 +59,17 @@ class AlpineActivity : AppCompatActivity(), OnMapReadyCallback
 		mapView = findViewById(R.id.mapAlpineFragmentMapView)
 		mapView?.onCreate(savedInstanceState)
 		mapView?.getMapAsync(this)
+		viewModel = ViewModelProvider(this).get(TrailViewModel::class.java)
+
+		viewModel.trailsAndPoints.observe(this, Observer {
+			it?.let {
+				Log.d("TRAILPOINTSSIZE", it.size.toString())
+				for (each in it){
+					Log.d("TRAILPOINTSSIZE", each.trailPoints.toString())
+				}
+
+			}
+		})
 		this.title = "Alpine Area"
 		addTrailNamesToList()
 		for (i in trailNameList) {
@@ -73,6 +92,7 @@ class AlpineActivity : AppCompatActivity(), OnMapReadyCallback
 				}
 			}
 		}
+
 	}
 
 	private fun addTrailNamesToList(){

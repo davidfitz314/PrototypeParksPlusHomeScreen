@@ -1,14 +1,14 @@
 package com.example.prototypeparksplushomescreen.JsonHolders
 
 import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-@JsonClass(generateAdapter = true)
 data class TrailAndTrailPointsJSONHolder(
-    @SerializedName("name")
+    @Json(name = "name")
     val name: String,
-    @SerializedName("filename")
+    @Json(name = "filename")
     val filename: String,
-    @SerializedName("coordinates")
+    @Json(name = "coordinates")
     val coordinates: List<TrailPointsJSONHolder>
 )
