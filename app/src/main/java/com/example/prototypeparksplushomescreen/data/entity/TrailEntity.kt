@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+//TODO update filename to be called folder name
 @Entity
 data class TrailEntity(
 

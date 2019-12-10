@@ -29,6 +29,7 @@ class SeedDatabaseWorker(val context: Context, workerParameters: WorkerParameter
             val trailDao = database.trailDao()
             val trailPointsDao = database.trailPointsDao()
 
+            //TODO update filename to be called folder name
             for (i in alpineTrailNameList){
                 applicationContext.assets.open("alpinejson/" + i).use {
                     val reader = it.bufferedReader().use { it.readText() }
