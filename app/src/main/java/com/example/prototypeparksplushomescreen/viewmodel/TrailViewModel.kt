@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.example.prototypeparksplushomescreen.data.EntityHelpers.TrailAndTrailPointsEntityHelper
 import com.example.prototypeparksplushomescreen.data.HelperDaos.TrailAndTrailPointsHelper
@@ -13,6 +14,7 @@ import com.example.prototypeparksplushomescreen.data.database.ZionDatabase
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
+import kotlinx.coroutines.GlobalScope
 import java.lang.Exception
 
 class TrailViewModel(application: Application) : AndroidViewModel(application) {
@@ -25,7 +27,7 @@ class TrailViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         trailDao = database.TrailAndTrailPointsDao()
-        trailsAndPoints = trailDao.getAllTrailsAndTrailPoints()
+        trailsAndPoints = trailDao.getAllTrailsAndTrailPointsByFileName("alpinejson")
         featureCollection = Transformations.map(trailsAndPoints, { convertToFeatureList(it) })
     }
 
@@ -35,6 +37,7 @@ class TrailViewModel(application: Application) : AndroidViewModel(application) {
             val pointsList: MutableList<Point> = mutableListOf()
             for (each in 0..myTrails.size - 1) {
                 var current = myTrails.get(each).trailPoints.trail_id
+//                Log.d("sourceaddedtrail", "###"+myTrails.get(each).trail.fileName)
 //                if (each + 1 >= myTrails.size - 1) {
 //                    pointsList.add(
 //                        Point.fromLngLat(

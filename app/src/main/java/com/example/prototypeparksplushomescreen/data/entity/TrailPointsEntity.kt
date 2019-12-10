@@ -12,7 +12,9 @@ data class TrailPointsEntity(
     val lat: Double,
     val lng: Double,
     @ColumnInfo(name = "trail_points_trail_name")
-    var trail_id: String
+    var trail_id: String,
+    @ColumnInfo(name = "file_name")
+    var fileName: String
 ) {
 
 }
