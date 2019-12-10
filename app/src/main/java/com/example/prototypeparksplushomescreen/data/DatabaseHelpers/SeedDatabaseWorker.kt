@@ -35,7 +35,7 @@ class SeedDatabaseWorker(val context: Context, workerParameters: WorkerParameter
                     val item = alpineAdapter.fromJson(reader)
                     item?.let {
                         val pointsList: List<TrailPointsEntity> = it.coordinates.map { coordinate ->
-                            TrailPointsEntity(coordinate.lat, coordinate.lng, it.name)
+                            TrailPointsEntity(0, coordinate.lat, coordinate.lng, it.name)
                         }
                         val trail: TrailEntity = TrailEntity(it.name, it.filename)
                         trailDao.insertTrail(trail)

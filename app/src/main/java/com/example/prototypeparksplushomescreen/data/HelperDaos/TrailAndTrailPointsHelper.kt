@@ -7,7 +7,7 @@ import com.example.prototypeparksplushomescreen.data.EntityHelpers.TrailAndTrail
 
 @Dao
 interface TrailAndTrailPointsHelper {
-    @Query("SELECT TrailEntity.*, TrailPointsEntity.* FROM TrailEntity INNER JOIN TrailPointsEntity on trailName == trail_points_trail_name")
+    @Query("SELECT TrailEntity.*, TrailPointsEntity.* FROM TrailEntity INNER JOIN TrailPointsEntity on trailName == trail_points_trail_name ORDER BY trail_points_trail_name ASC, trail_points_id ASC")
     fun getAllTrailsAndTrailPoints(): LiveData<List<TrailAndTrailPointsEntityHelper>>
 
     @Query("SELECT TrailEntity.*, TrailPointsEntity.* FROM TrailEntity INNER JOIN TrailPointsEntity ON trailName == :name AND trail_points_trail_name == :name")

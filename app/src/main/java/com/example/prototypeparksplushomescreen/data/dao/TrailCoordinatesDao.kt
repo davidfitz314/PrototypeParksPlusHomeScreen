@@ -6,7 +6,7 @@ import com.example.prototypeparksplushomescreen.data.entity.TrailPointsEntity
 
 @Dao
 interface TrailCoordinatesDao {
-    @Query("SELECT * FROM trailpointsentity")
+    @Query("SELECT * FROM trailpointsentity ORDER BY trail_points_trail_name ASC")
     fun getAllTrailsPoints(): LiveData<List<TrailPointsEntity>>
 
     @Query("SELECT * FROM trailpointsentity where trail_points_trail_name == :name")
