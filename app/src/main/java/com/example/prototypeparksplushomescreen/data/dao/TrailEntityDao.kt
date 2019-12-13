@@ -15,6 +15,9 @@ interface TrailEntityDao {
     @Query("SELECT * FROM trailentity WHERE trailName == :name")
     fun getTrailByName(name: String) : LiveData<TrailEntity>
 
+    @Query("SELECT * FROM trailentity WHERE fileName == :fileName")
+    fun getTrailsByFolder(fileName: String): LiveData<List<TrailEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllTrails(trails: List<TrailEntity>)
 

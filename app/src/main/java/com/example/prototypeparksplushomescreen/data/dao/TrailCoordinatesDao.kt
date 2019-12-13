@@ -12,6 +12,9 @@ interface TrailCoordinatesDao {
     @Query("SELECT * FROM trailpointsentity where trail_points_trail_name == :name")
     fun getAllTrailPointsByTrailName(name: String): LiveData<List<TrailPointsEntity>>
 
+    @Query("SELECT * FROM trailpointsentity where trail_points_trail_name == :name")
+    suspend fun getAllTrailPointsList(name: String): List<TrailPointsEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTrailPoints(trailPoints: List<TrailPointsEntity>)
 
