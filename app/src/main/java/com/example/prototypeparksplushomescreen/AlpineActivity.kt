@@ -38,13 +38,6 @@ class AlpineActivity : AppCompatActivity(), OnMapReadyCallback
 
 	var mapboxMap: MapboxMap? = null
 	var mapView: MapView? = null
-	var mapTrails = MutableLiveData<ArrayList<Point>>()
-	var trailNameList: ArrayList<String> = ArrayList<String>()
-
-	val moshi = Moshi.Builder()
-		.add(KotlinJsonAdapterFactory())
-		.build()
-	val adapter: JsonAdapter<MyTrail> = moshi.adapter(MyTrail::class.java)
 
 	lateinit var viewModel: TrailViewModel
 
@@ -61,78 +54,9 @@ class AlpineActivity : AppCompatActivity(), OnMapReadyCallback
 		mapView?.getMapAsync(this)
 		viewModel = ViewModelProvider(this).get(TrailViewModel::class.java)
 
-//		viewModel.trailsAndPoints.observe(this, Observer {
-//			it?.let {
-//				if (it.size > 0) {
-//					var current: String = it.get(0).trail.trailName
-//					val pointsList: MutableList<Point> = mutableListOf()
-//					for (each in 0..it.size - 1) {
-//						current = it.get(each).trailPoints.trail_id
-//						if (each+1 >= it.size - 1){
-//							pointsList.add(Point.fromLngLat(it.get(each).trailPoints.lng, it.get(each).trailPoints.lat))
-//							val feature = Feature.fromGeometry(LineString.fromLngLats(pointsList))
-//							viewModel.addFeatureToCollection(feature)
-//							pointsList.clear()
-//							break;
-//						}
-//						if (each < it.size - 1 && it.get(each+1).trail.trailName.equals(current)){
-//							pointsList.add(Point.fromLngLat(it.get(each).trailPoints.lng, it.get(each).trailPoints.lat))
-//						} else {
-//							val feature = Feature.fromGeometry(LineString.fromLngLats(pointsList))
-//							feature.addStringProperty("name", it.get(each).trail.trailName)
-//							viewModel.addFeatureToCollection(feature)
-//							pointsList.clear()
-//						}
-//					}
-//				}
-//
-//			}
-//		})
 		this.title = "Alpine Area"
-//		addTrailNamesToList()
-//		for (i in trailNameList) {
-//			GlobalScope.launch {
-//				withContext(Dispatchers.Main){
-//					try {
-//						applicationContext.assets.open("alpinejson/" + i).use {
-//							val reader = it.bufferedReader().use { it.readText() }
-//							val item = adapter.fromJson(reader)
-//							item?.let { myTrail ->
-//								val feature =
-//									Feature.fromGeometry(LineString.fromLngLats(myTrail.generateMapPointList()))
-//								feature.addStringProperty("name", myTrail.name)
-//								addFeatureToCollection(feature)
-//							}
-//						}
-//					}catch (e: Exception){
-//						e.printStackTrace()
-//					}
-//				}
-//			}
-//		}
 
 	}
-
-//	private fun addTrailNamesToList(){
-//		trailNameList.add("anderson_valley_trail.json")
-//		trailNameList.add("blake-gubler_trail_feet.json")
-//		trailNameList.add("browns_point_trail_281_feet.json")
-//		trailNameList.add("bull_valley_atv_trail_feet.json")
-//		trailNameList.add("canal_trail_feet.json")
-//		trailNameList.add("comanche_trail_feet.json")
-//		trailNameList.add("gardner_peak_trail_feet.json")
-//		trailNameList.add("goldstrike_fixed_feet.json")
-//		trailNameList.add("grass_valley_atv_trail_feet.json")
-//		trailNameList.add("oak-grove-road-ohv_feet.json")
-//		trailNameList.add("oak-grove-trail-hiking_feet.json")
-//		trailNameList.add("ox_valley_atv_trail_feet.json")
-//		trailNameList.add("silver_rim_trail_278_feet.json")
-//		trailNameList.add("stud_horse_draw_feet.json")
-//		trailNameList.add("summit_trail_feet.json")
-//		trailNameList.add("syler_spring_trail_271_feet.json")
-//		trailNameList.add("upper_grants_ranch_trail_feet.json")
-//		trailNameList.add("yant_flat-1_feet.json")
-//	}
 
 	override fun onMapReady(mapboxMap: MapboxMap)
 	{

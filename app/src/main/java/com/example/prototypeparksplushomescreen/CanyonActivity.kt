@@ -8,6 +8,7 @@ import android.util.JsonReader
 import androidx.annotation.NonNull
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.example.prototypeparksplushomescreen.viewmodel.TrailViewModel
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.LineString
@@ -32,13 +33,8 @@ class CanyonActivity : AppCompatActivity(), OnMapReadyCallback
 {
 	var mapboxMap: MapboxMap? = null
 	var mapView: MapView? = null
-	var featureCollection = MutableLiveData<ArrayList<Feature>>()
-	var trailNameList: ArrayList<String> = ArrayList<String>()
 
-	val moshi = Moshi.Builder()
-		.add(KotlinJsonAdapterFactory())
-		.build()
-	val adapter: JsonAdapter<MyTrail> = moshi.adapter(MyTrail::class.java)
+	lateinit var viewModel: TrailViewModel
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -52,57 +48,7 @@ class CanyonActivity : AppCompatActivity(), OnMapReadyCallback
 		mapView?.onCreate(savedInstanceState)
 		mapView?.getMapAsync(this)
 		this.title = "Canyon Area"
-		addTrailNamesToList()
-		for (i in trailNameList) {
-			GlobalScope.launch {
-				withContext(Dispatchers.Main){
-					try {
-						applicationContext.assets.open("canyonjson/" + i).use {
-							val reader = it.bufferedReader().use { it.readText() }
-							val item = adapter.fromJson(reader)
-							item?.let {myTrail ->
-								val feature = Feature.fromGeometry(LineString.fromLngLats(myTrail.generateMapPointList()))
-								feature.addStringProperty("name", myTrail.name)
-								addFeatureToCollection(feature)
-							}
-//							JsonReader(it.reader()).use { reader ->
-//								val myFeature = JsonTrailHandler().readJson(reader)
-//								addFeatureToCollection(myFeature)
-//							}
-						}
-					} catch (e: Exception){
-						e.printStackTrace()
-					}
-				}
-			}
-		}
-	}
 
-	private fun addTrailNamesToList(){
-		trailNameList.add("angels_landing_trail.json")
-		trailNameList.add("archeology_trail_reversed.json")
-		trailNameList.add("canyon_overlook_trail_292_feet.json")
-		trailNameList.add("chinle_trail_feet.json")
-		trailNameList.add("east_rim_trail_feet.json")
-		trailNameList.add("guacamole_trail_feet-4-reversed.json")
-		trailNameList.add("hidden_canyon_trail_feet.json")
-		trailNameList.add("kayenta_trail_feet.json")
-		trailNameList.add("lower_emerald_pools_trail_feet.json")
-		trailNameList.add("middle_emerald_pools_trail_208_feet.json")
-		trailNameList.add("middle_taylor_creek_trail_243_feet.json")
-		trailNameList.add("northgate_peaks_trail_feet.json")
-		trailNameList.add("observation_point_trail_291_feet.json")
-		trailNameList.add("parus_trail_feet.json")
-		trailNameList.add("rim_trail_feet.json")
-		trailNameList.add("riverside_walk_trail_259_feet.json")
-		trailNameList.add("sand_bench_trail-1_feet.json")
-		trailNameList.add("the_grotto_trail_241_feet.json")
-		trailNameList.add("upper_emerald_pools_trail_210_feet.json")
-		trailNameList.add("watchman_trail_feet.json")
-		trailNameList.add("weeping_rock_trail_216_feet.json")
-		trailNameList.add("west_rim_trail_feet.json")
-		trailNameList.add("wildcat_canyon_trail_229_feet.json")
-		trailNameList.add("zion_view_trail_308_feet.json")
 	}
 
 	override fun onMapReady(mapboxMap: MapboxMap)
@@ -113,18 +59,8 @@ class CanyonActivity : AppCompatActivity(), OnMapReadyCallback
 		}
 	}
 
-	private fun addFeatureToCollection(feature: Feature?){
-		feature?.let { localfeature ->
-			if (featureCollection.value == null){
-				featureCollection.value = ArrayList<Feature>()
-			}
-			featureCollection.value?.add(localfeature)
-			return
-		}
-	}
-
 	private fun addTrailSource(style: Style){
-		featureCollection.observe(this, Observer {
+		viewModel.featureCollection.observe(this, Observer {
 			if (it != null){
 				if (style.getSource("default-source") != null)
 				{

@@ -8,6 +8,7 @@ import android.util.JsonReader
 import androidx.annotation.NonNull
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.example.prototypeparksplushomescreen.viewmodel.TrailViewModel
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.LineString
@@ -33,13 +34,8 @@ class DesertActivity : AppCompatActivity(), OnMapReadyCallback
 {
 	var mapboxMap: MapboxMap? = null
 	var mapView: MapView? = null
-	var featureCollection = MutableLiveData<ArrayList<Feature>>()
-	var trailNameList: ArrayList<String> = ArrayList<String>()
 
-	val moshi = Moshi.Builder()
-		.add(KotlinJsonAdapterFactory())
-		.build()
-	val adapter: JsonAdapter<MyTrail> = moshi.adapter(MyTrail::class.java)
+	lateinit var viewModel: TrailViewModel
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -53,35 +49,6 @@ class DesertActivity : AppCompatActivity(), OnMapReadyCallback
 		mapView?.onCreate(savedInstanceState)
 		mapView?.getMapAsync(this)
 		this.title = "Desert Area"
-		addTrailNamesToList()
-		for (i in trailNameList) {
-			GlobalScope.launch {
-				withContext(Dispatchers.Main){
-					try {
-						applicationContext.assets.open("desertjson/" + i).use {
-							val reader = it.bufferedReader().use { it.readText() }
-							val item = adapter.fromJson(reader)
-							item?.let {myTrail ->
-								val feature = Feature.fromGeometry(LineString.fromLngLats(myTrail.generateMapPointList()))
-								feature.addStringProperty("name", myTrail.name)
-								addFeatureToCollection(feature)
-							}
-//							JsonReader(it.reader()).use { reader ->
-//								val myFeature = JsonTrailHandler().readJson(reader)
-//								addFeatureToCollection(myFeature)
-//							}
-						}
-					} catch (e: Exception){
-						e.printStackTrace()
-					}
-				}
-			}
-		}
-	}
-
-	private fun addTrailNamesToList(){
-		trailNameList.add("joshua_forest_fixed_feet.json")
-
 	}
 
 	override fun onMapReady(mapboxMap: MapboxMap)
@@ -92,18 +59,8 @@ class DesertActivity : AppCompatActivity(), OnMapReadyCallback
 		}
 	}
 
-	private fun addFeatureToCollection(feature: Feature?){
-		feature?.let { localfeature ->
-			if (featureCollection.value == null){
-				featureCollection.value = ArrayList<Feature>()
-			}
-			featureCollection.value?.add(localfeature)
-			return
-		}
-	}
-
 	private fun addTrailSource(style: Style){
-		featureCollection.observe(this, Observer {
+		viewModel.featureCollection.observe(this, Observer {
 			if (it != null){
 				if (style.getSource("default-source") != null)
 				{

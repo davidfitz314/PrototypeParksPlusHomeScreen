@@ -8,6 +8,7 @@ import android.util.JsonReader
 import androidx.annotation.NonNull
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.example.prototypeparksplushomescreen.viewmodel.TrailViewModel
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.LineString
@@ -32,13 +33,8 @@ class MesaActivity : AppCompatActivity(), OnMapReadyCallback
 {
 	var mapboxMap: MapboxMap? = null
 	var mapView: MapView? = null
-	var featureCollection = MutableLiveData<ArrayList<Feature>>()
-	var trailNameList: ArrayList<String> = ArrayList<String>()
 
-	val moshi = Moshi.Builder()
-		.add(KotlinJsonAdapterFactory())
-		.build()
-	val adapter: JsonAdapter<MyTrail> = moshi.adapter(MyTrail::class.java)
+	lateinit var viewModel: TrailViewModel
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -52,53 +48,6 @@ class MesaActivity : AppCompatActivity(), OnMapReadyCallback
 		mapView?.onCreate(savedInstanceState)
 		mapView?.getMapAsync(this)
 		this.title = "Mesa Area"
-		addTrailNamesToList()
-		for (i in trailNameList) {
-			GlobalScope.launch {
-				withContext(Dispatchers.Main){
-					try {
-						applicationContext.assets.open("mesajson/" + i).use {
-							val reader = it.bufferedReader().use { it.readText() }
-							val item = adapter.fromJson(reader)
-							item?.let {myTrail ->
-								val feature = Feature.fromGeometry(LineString.fromLngLats(myTrail.generateMapPointList()))
-								feature.addStringProperty("name", myTrail.name)
-								addFeatureToCollection(feature)
-							}
-
-//							JsonReader(it.reader()).use { reader ->
-//								val myFeature = JsonTrailHandler().readJson(reader)
-//								addFeatureToCollection(myFeature)
-//							}
-						}
-					} catch (e: Exception){
-						e.printStackTrace()
-					}
-				}
-			}
-		}
-	}
-
-	private fun addTrailNamesToList(){
-		trailNameList.add("cryptobionic_trail_feet.json")
-		trailNameList.add("dead_ringer_trail_feet.json")
-		trailNameList.add("eagle_crags_trail_feet.json")
-		trailNameList.add("goosebumps_trail_feet.json")
-		trailNameList.add("goulds_rim_trail_feet.json")
-		trailNameList.add("goulds_trail_feet.json")
-		trailNameList.add("hidden_canyon_trail_12_feet.json")
-		trailNameList.add("jem_trail_1_feet.json")
-		trailNameList.add("little_creek_feet_3.json")
-		trailNameList.add("more_cowbell_trail_204_feet.json")
-		trailNameList.add("north_rim_trail-1_feet.json")
-		trailNameList.add("practice_trail_feet.json")
-		trailNameList.add("sand_mountain_1-1_feet.json")
-		trailNameList.add("south_rim_trail_feet.json")
-		trailNameList.add("water_canyon_trail-reversed.json")
-		trailNameList.add("whiptail_trail-1_feet.json")
-		trailNameList.add("white_trail_feet.json")
-		trailNameList.add("windmill_trail_feet.json")
-		trailNameList.add("yellow_trail_feet.json")
 
 	}
 
@@ -110,18 +59,8 @@ class MesaActivity : AppCompatActivity(), OnMapReadyCallback
 		}
 	}
 
-	private fun addFeatureToCollection(feature: Feature?){
-		feature?.let { localfeature ->
-			if (featureCollection.value == null){
-				featureCollection.value = ArrayList<Feature>()
-			}
-			featureCollection.value?.add(localfeature)
-			return
-		}
-	}
-
 	private fun addTrailSource(style: Style){
-		featureCollection.observe(this, Observer {
+		viewModel.featureCollection.observe(this, Observer {
 			if (it != null){
 				if (style.getSource("default-source") != null)
 				{
