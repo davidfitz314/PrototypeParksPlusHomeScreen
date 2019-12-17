@@ -8,6 +8,7 @@ import android.util.JsonReader
 import androidx.annotation.NonNull
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.prototypeparksplushomescreen.viewmodel.TrailViewModel
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
@@ -47,6 +48,9 @@ class CanyonActivity : AppCompatActivity(), OnMapReadyCallback
 		mapView = findViewById(R.id.mapCanyonFragmentMapView)
 		mapView?.onCreate(savedInstanceState)
 		mapView?.getMapAsync(this)
+
+		viewModel = ViewModelProvider(this).get(TrailViewModel::class.java)
+
 		this.title = "Canyon Area"
 
 	}

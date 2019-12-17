@@ -34,10 +34,10 @@ class TrailViewModel(application: Application) : AndroidViewModel(application) {
     init {
         trailDao = database.TrailAndTrailPointsDao()
         trailPointsDao = database.trailPointsDao()
-        trailsAndPoints = trailDao.getAllTrailsAndTrailPointsByFileName("desertjson")
+        trailsAndPoints = trailDao.getAllTrailsAndTrailPointsByFileName("mesajson")
 //        featureCollection = Transformations.map(trailsAndPoints, { convertToFeatureList(it) })
         trailFolderDao = database.trailDao()
-        trailsByFolder = trailFolderDao.getTrailsByFolder("desertjson")
+        trailsByFolder = trailFolderDao.getTrailsByFolder("mesajson")
         featureCollection = Transformations.map(trailsByFolder, { convertTrailsToFeature(it) })
     }
 
