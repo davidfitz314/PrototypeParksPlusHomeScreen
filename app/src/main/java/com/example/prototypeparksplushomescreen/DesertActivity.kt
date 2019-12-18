@@ -9,6 +9,8 @@ import androidx.annotation.NonNull
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.example.prototypeparksplushomescreen.viewmodel.MyViewModelFactory
 import com.example.prototypeparksplushomescreen.viewmodel.TrailViewModel
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
@@ -50,7 +52,13 @@ class DesertActivity : AppCompatActivity(), OnMapReadyCallback
 		mapView?.onCreate(savedInstanceState)
 		mapView?.getMapAsync(this)
 
-		viewModel = ViewModelProvider(this).get(TrailViewModel::class.java)
+		val folder = intent.getStringExtra("folder_name")
+		if (folder != null) {
+			val viewModelFactory = MyViewModelFactory(application, folder)
+			viewModel = ViewModelProviders.of(this, viewModelFactory).get(TrailViewModel::class.java)
+		} else {
+			viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application).create(TrailViewModel::class.java)
+		}
 
 		this.title = "Desert Area"
 	}

@@ -1,12 +1,7 @@
 package com.example.prototypeparksplushomescreen.viewmodel
 
 import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.example.prototypeparksplushomescreen.data.EntityHelpers.TrailAndTrailPointsEntityHelper
 import com.example.prototypeparksplushomescreen.data.HelperDaos.TrailAndTrailPointsHelper
 import com.example.prototypeparksplushomescreen.data.dao.TrailCoordinatesDao
@@ -16,10 +11,10 @@ import com.example.prototypeparksplushomescreen.data.entity.TrailEntity
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
-import kotlinx.coroutines.*
-import java.lang.Exception
+import kotlinx.coroutines.runBlocking
 
-class TrailViewModel(application: Application) : AndroidViewModel(application) {
+
+class TrailViewModel(application: Application, folderName: String) : AndroidViewModel(application) {
     val database: ZionDatabase = ZionDatabase.getInstance(application.applicationContext)
     val trailDao: TrailAndTrailPointsHelper
     val trailPointsDao: TrailCoordinatesDao
@@ -34,10 +29,11 @@ class TrailViewModel(application: Application) : AndroidViewModel(application) {
     init {
         trailDao = database.TrailAndTrailPointsDao()
         trailPointsDao = database.trailPointsDao()
-        trailsAndPoints = trailDao.getAllTrailsAndTrailPointsByFileName("mesajson")
+
+        trailsAndPoints = trailDao.getAllTrailsAndTrailPointsByFileName(folderName)
 //        featureCollection = Transformations.map(trailsAndPoints, { convertToFeatureList(it) })
         trailFolderDao = database.trailDao()
-        trailsByFolder = trailFolderDao.getTrailsByFolder("mesajson")
+        trailsByFolder = trailFolderDao.getTrailsByFolder(folderName)
         featureCollection = Transformations.map(trailsByFolder, { convertTrailsToFeature(it) })
     }
 
@@ -122,5 +118,13 @@ class TrailViewModel(application: Application) : AndroidViewModel(application) {
 //        Log.d("sourceaddedtrail", outlist.size.toString() + " " + myTrails.size)
 //        return outlist
 //    }
+
+}
+
+class MyViewModelFactory(private val mApplication: Application, private val mParam: String) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return TrailViewModel(mApplication, mParam) as T
+    }
 
 }

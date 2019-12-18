@@ -186,12 +186,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 		{
 			return false
 		}
+
 		var rectF: RectF = RectF(point.x - 10, point.y - 10, point.x + 10, point.y + 10);
 		val features: List<Feature>? = mapboxMap?.queryRenderedFeatures(rectF, alpineLayer)
 		if (features != null && features.size > 0)
 		{
 //			Toast.makeText(this, "clicked " + "Alpine Layer", Toast.LENGTH_SHORT).show()
 			val alpineIntent = Intent(this, AlpineActivity::class.java)
+			alpineIntent.putExtra("folder_name", "alpinejson")
 			startActivity(alpineIntent)
 			return true
 		}
@@ -201,6 +203,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 			//			val name: String = features.get(0).getStringProperty(FEATURE_TITLE_LABEL);
 //			Toast.makeText(this, "clicked " + "Canyon Layer", Toast.LENGTH_SHORT).show()
 			val canyonIntent = Intent(this, CanyonActivity::class.java)
+			canyonIntent.putExtra("folder_name", "canyonjson")
 			startActivity(canyonIntent)
 			return true
 		}
@@ -211,6 +214,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 //            viewModel.onNavigateToFeatureScreen(features.get(0))
 //			Toast.makeText(this, "clicked " + "Desert Layer", Toast.LENGTH_SHORT).show()
 			val desertIntent = Intent(this, DesertActivity::class.java)
+			desertIntent.putExtra("folder_name", "desertjson")
 			startActivity(desertIntent)
 			return true
 		}
@@ -220,6 +224,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 			//			val name: String = features.get(0).getStringProperty(FEATURE_TITLE_LABEL);
 //            viewModel.onNavigateToFeatureScreen(features.get(0))
 			val mesaIntent = Intent(this, MesaActivity::class.java)
+			mesaIntent.putExtra("folder_name", "mesajson")
 			startActivity(mesaIntent)
 //			Toast.makeText(this, "clicked " + "Mesa Layer", Toast.LENGTH_SHORT).show()
 			return true
@@ -231,6 +236,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 //            viewModel.onNavigateToFeatureScreen(features.get(0))
 //			Toast.makeText(this, "clicked " + "Urban Layer", Toast.LENGTH_SHORT).show()
 			val urbanIntent = Intent(this, UrbanActivity::class.java)
+			urbanIntent.putExtra("folder_name", "urbanjson")
 			startActivity(urbanIntent)
 			return true
 		}

@@ -7,13 +7,11 @@ import android.os.PersistableBundle
 import android.util.JsonReader
 import android.util.Log
 import androidx.annotation.NonNull
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.example.prototypeparksplushomescreen.data.EntityHelpers.TrailAndTrailPointsEntityHelper
 import com.example.prototypeparksplushomescreen.data.HelperDaos.TrailAndTrailPointsHelper
 import com.example.prototypeparksplushomescreen.data.database.ZionDatabase
+import com.example.prototypeparksplushomescreen.viewmodel.MyViewModelFactory
 import com.example.prototypeparksplushomescreen.viewmodel.TrailViewModel
 import com.mapbox.geojson.*
 import com.mapbox.mapboxsdk.Mapbox
@@ -52,7 +50,14 @@ class AlpineActivity : AppCompatActivity(), OnMapReadyCallback
 		mapView = findViewById(R.id.mapAlpineFragmentMapView)
 		mapView?.onCreate(savedInstanceState)
 		mapView?.getMapAsync(this)
-		viewModel = ViewModelProvider(this).get(TrailViewModel::class.java)
+
+		val folder = intent.getStringExtra("folder_name")
+		if (folder != null) {
+			val viewModelFactory = MyViewModelFactory(application, folder)
+			viewModel = ViewModelProviders.of(this, viewModelFactory).get(TrailViewModel::class.java)
+		} else {
+			viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application).create(TrailViewModel::class.java)
+		}
 
 		this.title = "Alpine Area"
 
