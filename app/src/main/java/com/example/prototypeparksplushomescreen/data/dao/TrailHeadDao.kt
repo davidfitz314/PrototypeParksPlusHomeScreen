@@ -18,6 +18,4 @@ interface TrailHeadDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllTrailHeads(trailheads: List<TrailHead>)
 
-    @Delete
-    fun deleteAllTrailHeads()
 }
