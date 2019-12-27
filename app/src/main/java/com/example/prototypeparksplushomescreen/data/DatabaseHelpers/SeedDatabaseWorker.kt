@@ -1,16 +1,22 @@
 package com.example.prototypeparksplushomescreen.data.DatabaseHelpers
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.prototypeparksplushomescreen.JsonHolders.TrailAndTrailPointsJSONHolder
 import com.example.prototypeparksplushomescreen.data.database.ZionDatabase
 import com.example.prototypeparksplushomescreen.data.entity.TrailEntity
+import com.example.prototypeparksplushomescreen.data.entity.TrailHead
 import com.example.prototypeparksplushomescreen.data.entity.TrailPointsEntity
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.coroutineScope
+import java.lang.reflect.Type
 
 class SeedDatabaseWorker(val context: Context, workerParameters: WorkerParameters) : CoroutineWorker(context, workerParameters) {
     private val TAG by lazy { SeedDatabaseWorker::class.java.simpleName }
@@ -24,6 +30,8 @@ class SeedDatabaseWorker(val context: Context, workerParameters: WorkerParameter
         .add(KotlinJsonAdapterFactory())
         .build()
     val trailAdapter: JsonAdapter<TrailAndTrailPointsJSONHolder> = moshi.adapter(TrailAndTrailPointsJSONHolder::class.java)
+    val trailType = object:TypeToken<List<TrailHead>>(){}.type
+    val trailHeadAdapter: JsonAdapter<List<TrailHead>> = moshi.adapter(trailType)
 
     override suspend fun doWork(): Result = coroutineScope {
         try {
@@ -36,6 +44,7 @@ class SeedDatabaseWorker(val context: Context, workerParameters: WorkerParameter
             val database = ZionDatabase.getInstance(context)
             val trailDao = database.trailDao()
             val trailPointsDao = database.trailPointsDao()
+            val trailHeadDao = database.trailHeadDao()
 
             //TODO update filename to be called folder name
             for (i in alpineTrailNameList){
@@ -111,6 +120,37 @@ class SeedDatabaseWorker(val context: Context, workerParameters: WorkerParameter
                         trailPointsDao.insertTrailPoints(pointsList)
                     }
                 }
+            }
+
+            Log.d("seeddb", "before")
+            applicationContext.assets.open("alpinetrailheads.json").use {
+                val reader = it.bufferedReader().use { it.readText() }
+                val items: List<TrailHead> =Gson().fromJson(reader, trailType)
+                trailHeadDao.insertAllTrailHeads(items)
+            }
+
+            applicationContext.assets.open("canyontrailheads.json").use {
+                val reader = it.bufferedReader().use { it.readText() }
+                val items: List<TrailHead> =Gson().fromJson(reader, trailType)
+                trailHeadDao.insertAllTrailHeads(items)
+            }
+
+            applicationContext.assets.open("deserttrailheads.json").use {
+                val reader = it.bufferedReader().use { it.readText() }
+                val items: List<TrailHead> =Gson().fromJson(reader, trailType)
+                trailHeadDao.insertAllTrailHeads(items)
+            }
+
+            applicationContext.assets.open("mesatrailheads.json").use {
+                val reader = it.bufferedReader().use { it.readText() }
+                val items: List<TrailHead> =Gson().fromJson(reader, trailType)
+                trailHeadDao.insertAllTrailHeads(items)
+            }
+
+            applicationContext.assets.open("urbantrailheads.json").use {
+                val reader = it.bufferedReader().use { it.readText() }
+                val items: List<TrailHead> =Gson().fromJson(reader, trailType)
+                trailHeadDao.insertAllTrailHeads(items)
             }
 
         }catch (e:Exception){
