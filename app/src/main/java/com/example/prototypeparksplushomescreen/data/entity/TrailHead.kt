@@ -11,6 +11,6 @@ data class TrailHead(
     val lng: Double
 ) {
     @PrimaryKey(autoGenerate = true)
-    
+
     var trailheadId: Int = 0
 }

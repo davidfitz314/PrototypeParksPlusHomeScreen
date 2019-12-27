@@ -11,14 +11,17 @@ import com.example.prototypeparksplushomescreen.data.DatabaseHelpers.SeedDatabas
 import com.example.prototypeparksplushomescreen.data.HelperDaos.TrailAndTrailPointsHelper
 import com.example.prototypeparksplushomescreen.data.dao.TrailCoordinatesDao
 import com.example.prototypeparksplushomescreen.data.dao.TrailEntityDao
+import com.example.prototypeparksplushomescreen.data.dao.TrailHeadDao
 import com.example.prototypeparksplushomescreen.data.entity.TrailEntity
+import com.example.prototypeparksplushomescreen.data.entity.TrailHead
 import com.example.prototypeparksplushomescreen.data.entity.TrailPointsEntity
 
-@Database(entities = [TrailEntity::class, TrailPointsEntity::class], version = 1, exportSchema = false)
+@Database(entities = [TrailEntity::class, TrailPointsEntity::class, TrailHead::class], version = 1, exportSchema = false)
 abstract class ZionDatabase : RoomDatabase() {
     abstract fun trailDao(): TrailEntityDao
     abstract fun trailPointsDao(): TrailCoordinatesDao
     abstract fun TrailAndTrailPointsDao(): TrailAndTrailPointsHelper
+    abstract fun trailHeadDao(): TrailHeadDao
 
     companion object {
         @Volatile
