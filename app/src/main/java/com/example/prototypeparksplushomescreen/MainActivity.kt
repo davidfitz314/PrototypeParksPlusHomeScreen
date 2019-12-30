@@ -2,26 +2,26 @@ package com.example.prototypeparksplushomescreen
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.PointF
 import android.graphics.RectF
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.util.JsonReader
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
+import com.example.prototypeparksplushomescreen.viewmodel.MainActivityViewModel
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
-import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -38,7 +38,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.InputStream
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapClickListener
@@ -57,6 +56,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 	var urbanFeatureCollection = MutableLiveData<FeatureCollection>()
 	var mesaFeatureCollection = MutableLiveData<FeatureCollection>()
 	var desertFeatureCollection = MutableLiveData<FeatureCollection>()
+
+	private val viewModel: MainActivityViewModel by lazy {
+		ViewModelProvider(this).get(MainActivityViewModel::class.java)
+	}
 //
 //	var canyonPointsList = MutableLiveData<List<Point>>()
 //	var desertPointsList = MutableLiveData<List<Point>>()
@@ -150,6 +153,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 	{
 		this.mapboxMap = mapboxMap
 		mapboxMap.setStyle(Style.OUTDOORS) {
+			it.addImage("trailheaddefault", BitmapFactory.decodeResource(resources, R.drawable.hikingsm))
 			addSources(it)
 			val textFeatureList2 = textFeatureList
 			if (textFeatureList2 != null)
@@ -346,7 +350,41 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 			}
 		})
 
+		viewModel.trailHeads.observe(this, androidx.lifecycle.Observer {
+			if (it != null){
+//				Log.d("MainActivityObserver", it.size.toString())
+				if (style.getSource("trailheadssource") != null){
+					removeTrailHeadsLayer(style)
+					style.removeSource("trailheadssource")
+				}
 
+				if (style.getSource("trailheadssource") == null){
+					style.addSource(GeoJsonSource("trailheadssource", FeatureCollection.fromFeatures(it)))
+					addTrailHeadLayer(style)
+				}
+			}
+		})
+	}
+
+	private fun removeTrailHeadsLayer(style: Style){
+		if (style.getLayer("trailheadslayer") != null){
+			style.removeLayer("trailheadslayer")
+		}
+	}
+
+	private fun addTrailHeadLayer(style: Style){
+		if (style.getLayer("trailheadslayer") == null){
+			style.addLayer(
+				SymbolLayer("trailheadslayer", "trailheadssource")
+					.withProperties(
+						PropertyFactory.textField("{name}"),
+						PropertyFactory.iconImage("{image}"),
+						PropertyFactory.iconAllowOverlap(true),
+						PropertyFactory.iconOffset(arrayOf(0f, -9f))
+					)
+			)
+
+		}
 	}
 
 	private fun removeAlpineMapLayer(@NonNull style: Style)
