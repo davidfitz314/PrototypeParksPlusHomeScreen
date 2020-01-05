@@ -12,6 +12,9 @@ interface TrailHeadDao {
     @Query("SELECT * FROM trailhead WHERE folder == :folder")
     fun getAllTrailHeadsForFolderGroup(folder: String): LiveData<List<TrailHead>>
 
+    @Query("SELECT * FROM trailhead WHERE name == :name LIMIT 1")
+    fun getTrailHeadByTrailName(name: String): LiveData<TrailHead>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTrailHead(trailHead: TrailHead)
 

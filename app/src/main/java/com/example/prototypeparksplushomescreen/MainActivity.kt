@@ -14,6 +14,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
@@ -192,6 +193,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 		}
 
 		var rectF: RectF = RectF(point.x - 10, point.y - 10, point.x + 10, point.y + 10);
+		//trail handler clicks
+		val thfeatures: List<Feature>? = mapboxMap?.queryRenderedFeatures(rectF, "trailheadslayer")
+		if (thfeatures != null && thfeatures.size > 0)
+		{
+			Toast.makeText(this, "clicked " + "trail head Layer" + thfeatures.get(0).properties(), Toast.LENGTH_SHORT).show()
+			val trailheadIntent = Intent(this, TrailHeadActivity::class.java)
+			trailheadIntent.putExtra("trail_head_info", thfeatures.get(0).getStringProperty("name"))
+			startActivity(trailheadIntent)
+			return true
+		}
+		//regions clicks
+
 		val features: List<Feature>? = mapboxMap?.queryRenderedFeatures(rectF, alpineLayer)
 		if (features != null && features.size > 0)
 		{
